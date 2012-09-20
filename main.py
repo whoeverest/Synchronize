@@ -1,6 +1,6 @@
 import synchronize
 
-from matz import *
+import matz
 
-print add(2, 3)
-print subtract(5, 2)
+print matz.add(2, 3)
+print matz.subtract(5, 2)
