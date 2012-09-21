@@ -4,6 +4,9 @@ import inspect as i
 import codecs
 import logging
 
+# TODO:
+# - Replace print statements with logging
+
 
 # Get the location of the file that imports 'synchronize'.
 # If the file wasn't imported, use the path of the current
@@ -54,21 +57,15 @@ def extract_url(text):
 
 
 def update_file(file):
-    """ Update the file with the remote source, if there are changes.
+    """ Update the file with the remote source.
     """
-    with codecs.open(str(file), 'r', 'utf-8') as f:
-        local_source = f.read()
     url = extract_url(local_source)
     remote_source = read_source(url)
     if not remote_source:
-        print "Could not load " + url
-        return
-    else:
-        print "Fetched " + url
-    if local_source != remote_source:
-        with codecs.open(str(file), 'w', 'utf-8') as f:
-            f.write("# url %s\n" % url)
-            f.write(remote_source)
+        return False
+    with codecs.open(str(file), 'w', 'utf-8') as f:
+        f.write("# url %s\n" % url)
+        f.write(remote_source)
 
 
 # Slow and synchronous
