@@ -2,7 +2,6 @@ import urllib2
 import os
 import inspect as i
 import codecs
-import logging
 
 # TODO:
 # - Replace print statements with logging
@@ -20,7 +19,7 @@ def get_files(called_from):
     return files
 
 
-def read_source(url):
+def read_remote(url):
     """ Read the source from the given URL.
     """
     try:
@@ -38,17 +37,16 @@ def extract_url(file):
         for line in f.readlines():
             if line.startswith("# url "):
                 return line.split()[2]
-    return False
 
 
 def update_file(file):
     """ Update the file with the remote source.
     """
     url = extract_url(file)
-    if not url:
+    if url is None:
         return False  # no url found in file
-    remote_source = read_source(url)
-    if not remote_source:
+    remote_source = read_remote(url)
+    if remote_source is None:
         return False  # URL fetch failed
     with codecs.open(str(file), 'w', 'utf-8') as f:
         f.write("# url %s\n" % url)
@@ -85,5 +83,3 @@ del(get_files)
 del(read_source)
 del(extract_url)
 del(update_file)
-
-print dir()
