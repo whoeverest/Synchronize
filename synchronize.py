@@ -7,7 +7,6 @@ from multiprocessing import Process
 # TODO:
 # - Replace print statements with logging
 # - Handle hashbangs
-# - Hack to implement threads?
 
 
 def get_files(called_from):
@@ -92,5 +91,3 @@ del(extract_url)
 del(update_file)
 del(processes)
 del(p)
-
-print dir()
