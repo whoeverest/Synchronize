@@ -13,6 +13,27 @@ file you want synced.
 And that's it.
 
 # How it works
-When `import synchronize` gets executed it searches the caller's location and 
-subfolders for files containing `# url` comment. If they contain it, their source 
-is replaced with the remote version.
+When `import synchronize` gets executed, it searches through files located in the 
+caller's location. If they contain a `# url`, the script updates their content
+with the data downloaded from the provided url.
+
+# Example
+main_file.py:
+
+	import synchronize  # should be the first thing that gets executed
+	import matz
+
+	print matz.add(2,3)
+	print matz.subtract(5,2)
+
+matz.py
+
+	# url https://raw.github.com/gist/3756905/
+	def add(a,b):
+		return a + b
+
+	def subtract(a,b):
+		return a - b
+
+Now every time I run `main_file.py`, Synchronize updates the contents of
+`matz.py` with the contents of the Gist.
