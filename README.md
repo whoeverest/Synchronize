@@ -23,16 +23,16 @@ main_file.py:
 	import synchronize  # should be the first thing that gets executed
 	import matz
 
-	print matz.add(2,3)
-	print matz.subtract(5,2)
+	print matz.add(2, 3)
+	print matz.subtract(5, 2)
 
 matz.py
 
 	# url https://raw.github.com/gist/3756905/
-	def add(a,b):
+	def add(a, b):
 		return a + b
 
-	def subtract(a,b):
+	def subtract(a, b):
 		return a - b
 
 Now every time I run `main_file.py`, Synchronize updates the contents of
