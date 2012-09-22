@@ -20,24 +20,24 @@ with the data downloaded from the provided url.
 # Example
 main_file.py:
 
-	```python
-	import synchronize  # should be the first thing that gets executed
-	import matz
+```python
+import synchronize  # should be the first thing that gets executed
+import matz
 
-	print matz.add(2, 3)
-	print matz.subtract(5, 2)
-	```
+print matz.add(2, 3)
+print matz.subtract(5, 2)
+```
 
 matz.py
 
-	```python
-	# url https://raw.github.com/gist/3756905/
-	def add(a, b):
-		return a + b
+```python
+# url https://raw.github.com/gist/3756905/
+def add(a, b):
+	return a + b
 
-	def subtract(a, b):
-		return a - b
-	```
+def subtract(a, b):
+	return a - b
+```
 
 Now every time I run `main_file.py`, Synchronize updates the contents of
 `matz.py` with the contents of the Gist.
