@@ -5,6 +5,7 @@ import codecs
 
 # TODO:
 # - Replace print statements with logging
+# - Handle hashbangs
 # - Hack to implement threads?
 
 
@@ -34,7 +35,10 @@ def extract_url(file):
     """ Extract URL from comments, if any.
     """
     with open(file) as f:
-        for line in f.readlines():
+        while True:
+            line = f.readline()
+            if not line:
+                break
             if line.startswith("# url "):
                 return line.split()[2]
 
@@ -63,7 +67,8 @@ else:
 
 # Slow and synchronous
 for filename in get_files(called_from):
-    update_file(filename)
+    if update_file(filename):
+        print "Synchronized %s (%s)" % (os.path.basename(filename), filename)
 
 
 # Clean up the namespace...
@@ -72,7 +77,6 @@ del(i)
 del(os)
 del(urllib2)
 del(codecs)
-del(logging)
 
 # Variables
 del(called_from)
@@ -80,6 +84,6 @@ del(filename)
 
 # Functions
 del(get_files)
-del(read_source)
+del(read_remote)
 del(extract_url)
 del(update_file)
