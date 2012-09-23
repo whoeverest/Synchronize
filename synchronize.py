@@ -15,7 +15,7 @@ import multiprocessing
 # len(files_for_sync) processes are spawned
 settings = {
     'MAX_PR': 5,
-    'SILENT': True,
+    'SILENT': False,
 }
 
 
@@ -48,7 +48,7 @@ def extract_url(file):
     """
     with open(file) as f:
         line = f.readline()
-        if line.startswith("# url "):
+        if line.startswith("# url http"):
             return line.split()[2]
 
 
@@ -78,7 +78,7 @@ else:
 
 # Update the files
 files_for_sync = get_files(called_from)
-max_processes = max(settings['MAX_PR'], len(files_for_sync))
+max_processes = min(settings['MAX_PR'], len(files_for_sync))
 if files_for_sync:
     pool = multiprocessing.Pool(processes=max_processes)
     pool.map(update_file, files_for_sync)
