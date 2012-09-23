@@ -1,12 +1,22 @@
-import urllib2
 import os
+import urllib2
 import inspect as i
 import codecs
-from multiprocessing import Process
+import multiprocessing
 
 # TODO:
 # - Replace print statements with logging
 # - Handle hashbangs
+# - Refractor silent mode
+
+
+# Maximum number of processes the script can spawn;
+# If less then MAX_PR files are found for synchronization,
+# len(files_for_sync) processes are spawned
+settings = {
+    'MAX_PR': 5,
+    'SILENT': True,
+}
 
 
 def get_files(called_from):
@@ -26,9 +36,11 @@ def read_remote(url):
     try:
         return urllib2.urlopen(str(url)).read()
     except urllib2.URLError, e:
-        print "There was a error when fetching '%s':" % url
-        print e
-        print "Corresponding file won't be synchronized."
+        if not settings['SILENT']:
+            print
+            print "There was a error when fetching '%s':" % url
+            print e
+            print "Corresponding file won't be synchronized.\n"
 
 
 def extract_url(file):
@@ -45,14 +57,15 @@ def update_file(file):
     """
     url = extract_url(file)
     if url is None:
-        return False  # no url found in file
+        return
     remote_source = read_remote(url)
     if remote_source is None:
-        return False  # URL fetch failed
+        return
     with codecs.open(str(file), 'w', 'utf-8') as f:
         f.write("# url %s\n" % url)
         f.write(remote_source)
-    print "Updated %s" % os.path.basename(file)
+    if not settings['SILENT']:
+        print "Updated %s" % os.path.basename(file)
     return True
 
 
@@ -63,14 +76,12 @@ if __name__ == "__main__":
 else:
     called_from = i.getframeinfo(i.getouterframes(i.currentframe())[1][0])[0]
 
-processes = []
-for filename in get_files(called_from):
-    p = Process(target=update_file, args=(filename,))
-    p.start()
-    processes.append(p)
-for p in processes:
-    p.join()
-
+# Update the files
+files_for_sync = get_files(called_from)
+max_processes = max(settings['MAX_PR'], len(files_for_sync))
+if files_for_sync:
+    pool = multiprocessing.Pool(processes=max_processes)
+    pool.map(update_file, files_for_sync)
 
 # Clean up the namespace...
 # Imports:
@@ -78,16 +89,17 @@ del(i)
 del(os)
 del(urllib2)
 del(codecs)
-del(Process)
+del(multiprocessing)
 
 # Variables
+del(settings)
 del(called_from)
-del(filename)
+del(files_for_sync)
+del(max_processes)
 
 # Functions
 del(get_files)
 del(read_remote)
 del(extract_url)
 del(update_file)
-del(processes)
-del(p)
+del(pool)
